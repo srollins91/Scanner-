@@ -1,19 +1,24 @@
 import time
 from gainer_feed import get_top_gainers
+from alert import send_alert
+import random
 
-def is_valid_setup(ticker):
-    # Placeholder logic for now
-    return "A" in ticker
+def is_spike_candidate(ticker):
+    # TEMP PLACEHOLDER — replace with real logic later
+    return random.random() < 0.1  # Simulate 10% chance
 
 while True:
-    print("[SCAN STARTED]", time.strftime("%H:%M:%S"))
-    tickers = get_top_gainers()
-    print(f"[Phase 9] Loaded {len(tickers)} tickers: {tickers}")
+    print("[SCAN STARTED]")
+    gainers = get_top_gainers()
+    print(f"[Phase 9] Loaded {len(gainers)} tickers: {gainers}")
 
-    qualified = [t for t in tickers if is_valid_setup(t)]
-    if qualified:
-        print(f"[ALERT] Qualified setups: {qualified}")
-    else:
+    found = False
+    for ticker in gainers:
+        if is_spike_candidate(ticker):
+            send_alert(f"{ticker} is triggering spike scan setup!")
+            found = True
+
+    if not found:
         print("[NO QUALIFIED SETUPS]")
 
     print("[SLEEPING 5 MINUTES]")
