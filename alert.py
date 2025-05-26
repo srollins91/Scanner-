@@ -1,21 +1,14 @@
 import requests
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/1376351312312270888/_XJsB8JM7r4oCyipoIsrZfMw4j5peaLDNO9ZhHzJk9kEy0_TY-u9GJF2ZcmI1Pk2mGQU"
-
-def send_alert(ticker, reason="A+ Setup"):
-    tradingview_url = f"https://www.tradingview.com/symbols/{ticker.upper()}/"
-    message = {
-        "username": "Spike Scanner",
-        "embeds": [
-            {
-                "title": f"{ticker.upper()} Triggered",
-                "description": f"**Reason:** {reason}\n[Open in TradingView]({tradingview_url})",
-                "color": 3066993
-            }
-        ]
-    }
+def send_discord_alert(tickers):
+    webhook_url = "https://discord.com/api/webhooks/1376351312312270888/_XJsB8JM7r4oCyipoIsrZfMw4j5peaLDNO9ZhHzJk9kEy0_TY-u9GJF2ZcmI1Pk2mGQU"
+    if not tickers:
+        return
+    content = f"**Qualified Stocks:** {', '.join(tickers)}"
+    data = {"content": content}
     try:
-        response = requests.post(WEBHOOK_URL, json=message)
+        response = requests.post(webhook_url, json=data)
         response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        print(f"[ALERT ERROR] {e}")
+        print(f"[ALERT SENT] {content}")
+    except Exception as e:
+        print(f"[ALERT FAILED] {e}")
