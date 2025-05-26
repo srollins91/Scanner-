@@ -1,4 +1,6 @@
 from alert import send_alert
 
-# TEST ONLY — Sends a manual alert to Discord
-send_alert("GCT")  # Replace GCT with any ticker you like
+# Example inside your scan loop:
+if is_valid_setup(ticker_data):  # your custom logic
+    print(f"[ALERT] {ticker}")
+    send_alert(ticker, reason="A+ Spike Setup")
