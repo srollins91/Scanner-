@@ -1,5 +1,3 @@
-import requests
-import os
 from datetime import datetime
 from gainer_feed import get_top_gainers
 from alert import send_discord_alert
@@ -8,7 +6,6 @@ from alert import send_discord_alert
 UNDER_PRICE = 5.00
 MIN_VOLUME = 50000
 
-# === PHASE 9 ===
 def scan():
     print(f"[SCAN STARTED] {datetime.now().strftime('%H:%M:%S')}")
     tickers = get_top_gainers()
@@ -17,6 +14,7 @@ def scan():
     qualified = []
     for ticker in tickers:
         try:
+            import requests
             data = requests.get(f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={ticker}").json()
             quote = data['quoteResponse']['result'][0]
             price = quote.get('regularMarketPrice', 0)
@@ -33,5 +31,4 @@ def scan():
     else:
         print("[NO QUALIFIED SETUPS]")
 
-if __name__ == '__main__':
-    scan()
+scan()
