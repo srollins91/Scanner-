@@ -2,15 +2,16 @@ import requests
 from bs4 import BeautifulSoup
 
 def get_top_gainers():
-    url = "https://finviz.com/screener.ashx?v=111&s=ta_topgainers"
+    url = "https://finance.yahoo.com/gainers"
     headers = {"User-Agent": "Mozilla/5.0"}
+    html = requests.get(url, headers=headers).text
+    soup = BeautifulSoup(html, "html.parser")
 
-    try:
-        response = requests.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, "html.parser")
-        table = soup.find_all("a", class_="screener-link-primary")
-        tickers = [t.text.strip() for t in table]
-        return tickers[:15]  # Limit to top 15 for speed
-    except Exception as e:
-        print(f"[ERROR] Failed to fetch gainers: {e}")
-        return []
+    tickers = []
+    for row in soup.select("table tbody tr"):
+        cols = row.find_all("td")
+        if len(cols) > 0:
+            ticker = cols[0].text.strip()
+            tickers.append(ticker)
+
+    return tickers
