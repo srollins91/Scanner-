@@ -2,24 +2,24 @@ name: Heartbeat
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Every 6 hours
+    - cron: '0 */6 * * *'  # Every 6 hours
   workflow_dispatch:
 
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
     steps:
-      - name: Pull repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Update heartbeat file
+      - name: Update timestamp
         run: |
           echo "Last ping: $(date)" > heartbeat.txt
-          
-      - name: Commit update
+
+      - name: Commit ping
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git add heartbeat.txt
           git commit -m "Heartbeat ping"
           git push
